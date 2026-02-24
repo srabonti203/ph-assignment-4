@@ -17,9 +17,7 @@
    Answer:
    To creat a new element we have to write
    let div=document.creatElement("div");
-   div.innerHTML=`<div class="flex justify-between items-center">
-      <h3 class="font-bold">MegaCorp Solutions</h3>
-    </div>`
+   div.innerHTML='<div>Hello</div>';
    to insert this new element into a cart section we have to use the appendChild()function.
    cart.appendChild(div);
 
