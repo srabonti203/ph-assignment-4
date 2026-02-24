@@ -24,7 +24,8 @@ let rejectedBtn = collectId("rejected-btn");
 // total job,interview,rejected count
 function calculateCount() {
   totalCount.innerText = allCarts.children.length;
-  availJobCount.innerText = allCarts.children.length;
+  availJobCount.innerText =
+    allCarts.querySelectorAll(".cart:not(.hidden)").length;
   interviewCount.innerText = interviewList.length;
   rejectedCount.innerText = rejectedList.length;
 }
@@ -99,6 +100,7 @@ allCarts.addEventListener("click", function (event) {
     rejectedList = rejectedList.filter(
       (item) => item.companyName != cartInfo.companyName,
     );
+
     calculateCount();
   }
   if (event.target.classList.contains("btn-error")) {
@@ -134,6 +136,164 @@ allCarts.addEventListener("click", function (event) {
     );
     calculateCount();
   }
+
+  //delete btn functionality
+  if (event.target.classList.contains("delete-btn")) {
+    const parentNode = event.target.parentNode.parentNode;
+    parentNode.classList.add("hidden");
+    const companyName = parentNode.querySelector("h3").innerText;
+    interviewList = interviewList.filter(
+      (item) => item.companyName != companyName,
+    );
+    rejectedList = rejectedList.filter(
+      (item) => item.companyName != companyName,
+    );
+    calculateCount();
+    //rerendering render cart
+    if (!filterSection.classList.contains("hidden")) {
+      if (interviewBtn.classList.contains("bg-sky-600")) {
+        renderCart(interviewList);
+      }
+      if (rejectedBtn.classList.contains("bg-sky-600")) {
+        renderCart(rejectedList);
+      }
+    }
+  }
+});
+//adding event bubble to filtersection to push interview and rejected to the array and count
+filterSection.addEventListener("click", function (event) {
+  if (event.target.classList.contains("btn-success")) {
+    const parentNode = event.target.parentNode.parentNode;
+    parentNode.classList.add("hidden");
+    const companyName = parentNode.querySelector("h3").innerText;
+    const jobTittle = parentNode.querySelector(".post").innerText;
+    const jobLocation = parentNode.querySelector(".job-location").innerText;
+    const jobType = parentNode.querySelector(".job-type").innerText;
+    const salary = parentNode.querySelector(".salary").innerText;
+    const status = parentNode.querySelector(".status");
+    status.innerText = "INTERVIEW";
+    const description = parentNode.querySelector(".description").innerText;
+
+    let cartInfo = {
+      companyName,
+      jobTittle,
+      jobLocation,
+      jobType,
+      salary,
+      status: "INTERVIEW",
+      description,
+    };
+
+    const companyExist = interviewList.find(
+      (item) => item.companyName == cartInfo.companyName,
+    );
+    if (!companyExist) {
+      interviewList.push(cartInfo);
+    }
+    rejectedList = rejectedList.filter(
+      (item) => item.companyName != cartInfo.companyName,
+    );
+
+    calculateCount();
+  }
+  if (event.target.classList.contains("btn-error")) {
+    const parentNode = event.target.parentNode.parentNode;
+    parentNode.classList.add("hidden");
+    const companyName = parentNode.querySelector("h3").innerText;
+    const jobTittle = parentNode.querySelector(".post").innerText;
+    const jobLocation = parentNode.querySelector(".job-location").innerText;
+    const jobType = parentNode.querySelector(".job-type").innerText;
+    const salary = parentNode.querySelector(".salary").innerText;
+    const status = parentNode.querySelector(".status");
+    status.innerText = "REJECTED";
+    const description = parentNode.querySelector(".description").innerText;
+
+    let cartInfo = {
+      companyName,
+      jobTittle,
+      jobLocation,
+      jobType,
+      salary,
+      status: "REJECTED",
+      description,
+    };
+
+    const companyExist = rejectedList.find(
+      (item) => item.companyName == cartInfo.companyName,
+    );
+    if (!companyExist) {
+      rejectedList.push(cartInfo);
+    }
+    interviewList = interviewList.filter(
+      (item) => item.companyName != cartInfo.companyName,
+    );
+    calculateCount();
+  }
+
+  //delete btn functionality
+  if (event.target.classList.contains("delete-btn")) {
+    const parentNode = event.target.parentNode.parentNode;
+    parentNode.classList.add("hidden");
+    const companyName = parentNode.querySelector("h3").innerText;
+    interviewList = interviewList.filter(
+      (item) => item.companyName != companyName,
+    );
+    rejectedList = rejectedList.filter(
+      (item) => item.companyName != companyName,
+    );
+    calculateCount();
+    //rerendering render cart
+    if (!filterSection.classList.contains("hidden")) {
+      if (interviewBtn.classList.contains("bg-sky-600")) {
+        renderCart(interviewList);
+      }
+      if (rejectedBtn.classList.contains("bg-sky-600")) {
+        renderCart(rejectedList);
+      }
+    }
+  }
+  //rerendering render cart
+  if (!filterSection.classList.contains("hidden")) {
+    if (interviewBtn.classList.contains("bg-sky-600")) {
+      renderCart(interviewList);
+    }
+    if (rejectedBtn.classList.contains("bg-sky-600")) {
+      renderCart(rejectedList);
+    }
+  }
+
+  //delete btn functionality
+  if (event.target.classList.contains("delete-btn")) {
+    const parentNode = event.target.parentNode.parentNode;
+    parentNode.classList.add("hidden");
+    const companyName = parentNode.querySelector("h3").innerText;
+    const companyExist = interviewList.find(
+      (item) => item.companyName == cartInfo.companyName,
+    );
+    if (!companyExist) {
+      interviewList.push(cartInfo);
+    }
+    rejectedList = rejectedList.filter(
+      (item) => item.companyName != cartInfo.companyName,
+    );
+    if (!companyExist) {
+      rejectedList.push(cartInfo);
+    }
+    interviewList = interviewList.filter(
+      (item) => item.companyName != cartInfo.companyName,
+    );
+    calculateCount();
+
+    //rerendering render cart
+    if (!filterSection.classList.contains("hidden")) {
+      if (interviewBtn.classList.contains("bg-sky-600")) {
+        renderCart(interviewList);
+      }
+      if (rejectedBtn.classList.contains("bg-sky-600")) {
+        renderCart(rejectedList);
+      }
+    }
+  }
 });
 //extracting filterd cart and pushing it to the filtered-section in html
 function renderCart(currentArr) {
@@ -162,12 +322,8 @@ function renderCart(currentArr) {
       div.className = "cart bg-base-100 space-y-5 p-4 md:p-4";
       div.innerHTML = `
      <div class="flex justify-between items-center">
-            <h3 class="font-bold">${current.companyName}</h3>
-            <div
-              class="w-8 h-8 rounded-full flex justify-center items-center btn btn-error"
-            >
-              <i class="fa-regular fa-trash-can"></i>
-            </div>
+            <h3 class="font-bold">${current.companyName}</h3>           
+            <i class="delete-btn fa-regular fa-trash-can"></i>
           </div>
 
           <p class="post text-sm text-slate-500">${current.jobTittle}</p>
