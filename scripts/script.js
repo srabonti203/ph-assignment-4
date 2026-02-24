@@ -23,7 +23,7 @@ let rejectedBtn = collectId("rejected-btn");
 
 // total job,interview,rejected count
 function calculateCount() {
-  totalCount.innerText = allCarts.children.length;
+  totalCount.innerText = allCarts.querySelectorAll(".cart:not(.hidden)").length;
   availJobCount.innerText =
     allCarts.querySelectorAll(".cart:not(.hidden)").length;
   interviewCount.innerText = interviewList.length;
